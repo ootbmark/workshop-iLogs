@@ -1,3 +1,4 @@
+<meta name="cf-2fa-verify" content="3pw46ex0hgi38404">
 @if(config('app.env') == 'production')
     <!-- Facebook Pixel Code -->
     <script>

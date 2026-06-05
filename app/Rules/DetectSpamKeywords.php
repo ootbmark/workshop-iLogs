@@ -407,7 +407,6 @@ class DetectSpamKeywords implements Rule
         'pedo',
         'kill yourself',
         'die',
-        'kill',
         'crypto currency',
         'bitcoin',
         'medication',
