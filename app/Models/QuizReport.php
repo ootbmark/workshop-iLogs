@@ -29,6 +29,7 @@ class QuizReport extends Model
         'group_id',
         'report_status',
         'parent_id',
+        'quiz_user_id',
         'priority',
         'business_partner',
         'is_verification_1',
@@ -169,9 +170,24 @@ class QuizReport extends Model
     {
         $report = $this->query()
             ->withoutGlobalScope(self::SCOPE_ONLY_FRESH)
-            ->select('id', 'quiz_id', 'group_id', 'status', 'status_effort', 'priority', 'action_party', 'focal_point',
-                'target_date', 'business_partner', 'is_verification_1', 'is_verification_2', 'is_verification_3',
-                'is_verification_4', 'is_verification_5', 'report_status')
+            ->select(
+                'id',
+                'quiz_id',
+                'group_id',
+                'status',
+                'status_effort',
+                'priority',
+                'action_party',
+                'focal_point',
+                'target_date',
+                'business_partner',
+                'is_verification_1',
+                'is_verification_2',
+                'is_verification_3',
+                'is_verification_4',
+                'is_verification_5',
+                'report_status'
+            )
             ->with(['group' => function ($q) {
                 $q->select('id', 'name');
             }])
@@ -212,7 +228,10 @@ class QuizReport extends Model
             'quiz_report' => $quiz_report
         ])->render();
     }
-
+    public static function laratablesCustomQuizCodeLink($quiz)
+    {
+        return view('dashboard.quiz.custom._quiz_code_link', compact('quiz'))->render();
+    }
     public function quiz_answers()
     {
         return $this->hasMany(QuizAnswer::class);
@@ -221,5 +240,9 @@ class QuizReport extends Model
     public function group()
     {
         return $this->belongsTo(GroupForQuiz::class);
+    }
+    function quizUser()
+    {
+        return $this->belongsTo(UserQuiz::class, 'quiz_user_id');
     }
 }

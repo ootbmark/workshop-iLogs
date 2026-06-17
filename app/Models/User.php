@@ -262,4 +262,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->status == 'active' ? true : false;
     }
+    function completeName()
+    {
+        $complete_name = $this->first_name . " " . $this->last_name;
+        return $complete_name;
+    }
 }

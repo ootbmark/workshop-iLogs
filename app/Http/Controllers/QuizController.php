@@ -155,26 +155,17 @@ class QuizController extends Controller
     public function show(Request $request, string $slug)
     {
         $course_id = $request->has('course') ? $request->course : null;
-
         $time_limit = '';
-
         $quiz = Quiz::whereSlug($slug)->first();
         if (!$quiz) {
             abort(404);
         }
-
         $userQuiz = UserQuiz::byUserIDAndQuizID($request->user()->id, $quiz->id)->first();
-
         $props = $this->quizProperties($userQuiz);
-
         $is_participate = $course_id ? [] : $this->checkIfUserParticipateQuiz($request->user()->id, $quiz->id);
-
         $completed_quiz_questions_count = $quiz->questions->count();
-
         $quiz_result = 100 * $props['right_answer_count'] / $completed_quiz_questions_count;
-
         $quiz_answer_status = $this->quizAnswerStatus($quiz_result);
-
         if ($userQuiz && $userQuiz->is_completed && !$request->has('new') && is_null($course_id)) {
             return redirect(route('quizes'));
         } else {
@@ -191,20 +182,15 @@ class QuizController extends Controller
         if ($userQuiz) {
             if (0 && !$userQuiz->is_completed) {
                 $end_time = Carbon::parse($userQuiz->created_at)->addMinutes($quiz->time_limit);
-
                 if ($end_time->isPast()) {
-
                     $userQuiz->update([
                         'is_completed' => true
                     ]);
-
                     return view('quiz_time_over', []);
                 }
-
                 $time_limit = $end_time->toDateTimeString();
             }
         }
-
         return view('quiz.show', [
             'quiz' => $quiz,
             'user_quiz_id' => $userQuiz->id,

@@ -18,7 +18,8 @@ class UserQuiz extends Model
         'user_id',
         'quiz_id',
         'is_completed',
-        'group_id'
+        'group_id',
+        'participate_name'
     ];
 
     protected $casts = [

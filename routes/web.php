@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\Forms\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/scribes/{scribe_id}/edit', [\App\Http\Controllers\QuizController::class, 'editQuizAnswer'])->name('quiz-answer.edit');
     Route::patch('/scribes/{scribe_id}', [\App\Http\Controllers\QuizController::class, 'updateQuizAnswer'])->name('quiz-answer.update');
 
+
     Route::group(['prefix' => 'profile'], function () {
         Route::get('/', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
         Route::post('/', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
@@ -106,4 +107,41 @@ Route::get('/logout-account', [App\Http\Controllers\PageController::class, 'logo
 
 Route::get('/email-footer', function () {
     return view('emails.footer_alert');
+});
+Route::prefix('admin')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])
+        ->name('dashboard');
+    Route::prefix('/forms')->group(function () {
+        // Route::get('/', [GroupsController::class, 'index'])->name('forms.view');
+
+        /*
+        GET    /admin/groups
+        GET    /admin/groups/create
+        POST   /admin/groups
+        GET    /admin/groups/{group}
+        GET    /admin/groups/{group}/edit
+        PUT    /admin/groups/{group}
+        DELETE /admin/groups/{group}
+        */
+    });
+    Route::resource('groups', Forms\GroupsController::class);
+});
+Route::prefix('forms/v2/')->group(function () {
+    Route::controller(\Forms\FormsController::class)->group(function () {
+        Route::get('dashboard/{data}', 'index')->name('forms.dashboard');
+        Route::get('/view', 'loginCode')->name('forms.view');
+        Route::post('/view', 'verifyCode')->name('form.verifyCode');
+        Route::get('/view/{data}', 'show')->name('forms.view-code');
+        Route::get('/generate', 'generate');
+        Route::post('/store-answer/{data}', 'storeParticipantAnswer')->name('forms.store-answer');
+        Route::patch('/complete-quiz/{data}', 'completeQuiz')->name('forms.quiz-complete');
+
+        // Scribes
+        Route::get('list-of-scribes/{data}', 'scribesDataTable')->name('forms.scribes-data');
+        Route::get('/{data}/scribes/{scribe}', 'viewQuizReport')->name('forms.scribes-view');
+        Route::get('/{data}/questioner/{scribe}', 'editQuizReport')->name('forms.scribes-edit');
+
+        Route::get('/share-workshop-link', 'shareLink')->name('forms.show-qrcode');
+        Route::get('/workshop-dashboard/{data}', 'workshopDashboard')->name('forms.workshop-dashboard');
+    });
 });

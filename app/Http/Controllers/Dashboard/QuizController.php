@@ -104,7 +104,6 @@ class QuizController extends Controller
             $data['groups_ids'] = explode(',', $data['groups_ids']);
 
             $quiz->groups()->sync($data['groups_ids']);
-
         }
 
         return QuizResource::make($quiz->refresh());
@@ -133,7 +132,6 @@ class QuizController extends Controller
             $data['groups_ids'] = explode(',', $data['groups_ids']);
 
             $quiz->groups()->sync($data['groups_ids']);
-
         }
 
         $quiz->update($data);
@@ -295,6 +293,12 @@ class QuizController extends Controller
                     'quiz_report' => $import
                 ])->render();
             })
+            ->addColumn('quiz_code', function ($import) {
+
+                return view('dashboard.quiz.custom._quiz_code_link', [
+                    'quiz_report' => $import
+                ])->render();
+            })
             ->rawColumns([
 
                 'group_number',
@@ -302,6 +306,7 @@ class QuizController extends Controller
                 'first_answer',
                 'quiz_title',
                 'company',
+                'quiz_code',
                 'actions',
 
             ])
@@ -400,7 +405,6 @@ class QuizController extends Controller
         flash()->success('Delete Report');
 
         return back();
-
     }
 
     /**
@@ -432,7 +436,6 @@ class QuizController extends Controller
         ]);
         Quiz::find($id)->update($request->all());
         return response()->json('success', 200);
-
     }
 
     public function export()
@@ -471,9 +474,9 @@ class QuizController extends Controller
             'quizzes' => $quizzes,
         ])->setPaper('a2', 'landscape');
 
-        if(count($quizzes)){
+        if (count($quizzes)) {
             return $pdf->download(str_replace('/', '', $quizzes[0]->title) . ".pdf");
-        }else{
+        } else {
             flash()->warning('There are no report yet');
             return back();
         }
@@ -511,7 +514,6 @@ class QuizController extends Controller
             $quiz = Quiz::find($id);
 
             if (count($quiz->groups)) $selected_group = $quiz->groups()->get(['name', 'groups_for_quiz.id'])->toArray();
-
         }
 
         return response()->json([
@@ -597,11 +599,9 @@ class QuizController extends Controller
 
                 Answer::create($answer_data + ['question_id' => $newQuestionId]);
             });
-
         });
 
         return response('success', 200);
-
     }
 
     public function checkQuizSlug($row, $i = null)

@@ -37,6 +37,7 @@ class Quiz extends Model
         'verification_text_3',
         'verification_text_4',
         'verification_text_5',
+        'quiz_code'
     ];
 
     /**
@@ -45,7 +46,25 @@ class Quiz extends Model
     protected $casts = [
         'answer_by_one'
     ];
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::creating(function ($model) {
+            // Generate a unique code like: F65A9C
+            /* $randomCode = bin2hex(random_bytes(3));
+            $model->quiz_code = strtoupper($randomCode); */
+            $letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $alphanumeric = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            // 1. Get 2 random letters
+            $randomLetters = substr(str_shuffle($letters), 0, 2);
+            // 2. Get 4 random characters (numbers or letters)
+            $randomPayload = substr(str_shuffle($alphanumeric), 0, 4);
+            // 3. Combine them
+            $model->quiz_code = $randomLetters . $randomPayload;
+            // Output examples: FX65A9, QZ497C, AB12T9
+        });
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -74,7 +93,13 @@ class Quiz extends Model
     {
         return view('dashboard.quiz.custom._actions', compact('quiz'))->render();
     }
-
+    public static function laratablesCustomQuizCode($quiz)
+    {
+        return view(
+            'dashboard.quiz.custom._quiz_code_link',
+            compact('quiz')
+        )->render();
+    }
     public function courses(): MorphToMany
     {
         return $this->morphedByMany('App\Course', 'quizable', 'quizables');
@@ -94,7 +119,6 @@ class Quiz extends Model
     {
         return $this->belongsToMany(GroupForQuiz::class, 'quiz_groups', 'quiz_id', 'group_id');
     }
-
     /**
      * @return BelongsToMany
      */
@@ -102,5 +126,4 @@ class Quiz extends Model
     {
         return $this->belongsToMany(User::class, 'user_allowed_quizes', 'quiz_id', 'user_id');
     }
-
 }
