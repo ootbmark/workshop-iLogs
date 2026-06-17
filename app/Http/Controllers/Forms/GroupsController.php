@@ -25,4 +25,13 @@ class GroupsController extends Controller
             //throw $th;
         }
     }
+    function update(Request $request, int $data)
+    {
+        try {
+            GroupForQuiz::find($data)->update(['name' => $request->name]);
+            return back()->with('success', 'Successfully Added a Group');
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
 }

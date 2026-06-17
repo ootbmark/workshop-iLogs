@@ -9,7 +9,7 @@
                     {{--  <p class="text-muted small mb-0">Add or edit operational companies, sub-contractors, and education
                         institutions.</p> --}}
                 </div>
-                <button onclick="openCompanyForm()"
+                <button onclick="openCompanyForm(null)"
                     class="btn btn-spreadBlue py-2.5 px-3 rounded-3 d-inline-flex align-items-center gap-2">
                     <i class="bi bi-building-plus"></i> Add Group
                 </button>
@@ -30,7 +30,7 @@
 
                                 <td class="text-end">
                                     <div class="d-flex align-items-center justify-content-end gap-1">
-                                        <button onclick="openCompanyForm('{{ $item->id }}')"
+                                        <button onclick="openCompanyForm({{ $item->id }})"
                                             class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0"
                                             title="Edit User">
                                             <i class="bi bi-pencil-fill"></i>
@@ -59,8 +59,9 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 text-start" id="adminConfigModalBody">
-                    <form action="{{ route('groups.store') }}" method="post">
+                    <form action="{{ route('groups.store') }}" method="post" id="modal-form">
                         @csrf
+                        <input type="hidden" name="_method" id="formMethod" value="POST">
                         <div class="mb-3 text-start">
                             <label for="group-name"
                                 class="form-label text-uppercase text-muted fw-bold small tracking-wider"
@@ -68,7 +69,7 @@
                             <div class="input-group">
                                 <span class="input-group-text bg-white text-muted border-end-0"><i
                                         class="bi bi-organization"></i></span>
-                                <input id="group-name" type="text" name="name" value="{{ old('name') }}"
+                                <input id="form-group-name" type="text" name="name" value="{{ old('name') }}"
                                     class="form-control border-start-0 py-2.5 shadow-none" placeholder="">
 
                             </div>
@@ -93,10 +94,13 @@
         let confirmInstance = null;
         let activeDeleteAction = null;
         let groupList = []
+        document.addEventListener('DOMContentLoaded', function() {
+            groupList = @json($groupList)
+        });
         window.onload = function() {
             modalInstance = new bootstrap.Modal(document.getElementById('adminConfigModal'));
             confirmInstance = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-            groupList = @json($groupList)
+
         };
 
         function confirmDelete(type, id) {
@@ -147,20 +151,21 @@
             confirmInstance.show();
         }
 
-        function openCompanyForm(editId = null) {
+        function openCompanyForm(editId) {
             const label = document.getElementById('adminConfigModalLabel');
             const body = document.getElementById('adminConfigModalBody');
-
-            let companyObj = {
-                id: '',
-                name: '',
-                type: 'Oil Co Partner',
-                location: ''
-            };
+            const form = document.getElementById('modal-form');
+            const name = document.getElementById('form-group-name');
+            const methodInput = document.getElementById('formMethod');
             if (editId) {
-                companyObj = groupList.find(c => c.id === editId) || companyObj;
+                console.log(groupList)
+                companyObj = groupList.find(c => c.id === editId);
                 console.log(companyObj)
+                name.value = companyObj.name
                 label.innerText = "Modify Group Details";
+                form.action = `/admin/groups/${companyObj.id}`;
+                form.method = "POST"; // stays POST (HTML limitation)
+                methodInput.value = "PUT"; // Laravel spoof
             } else {
                 label.innerText = "Add Group";
             }
