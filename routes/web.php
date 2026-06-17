@@ -14,10 +14,14 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
-
+//Route::get('/', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
+Route::get('/', function () {
+    return redirect('login');
+})->name('home');
 Route::group(['middleware' => ['auth', 'verified']], function () {
-
+    Route::get('/', function () {
+        return redirect('admin');
+    })->name('home');
     Route::get('/send-test-email', function () {
         Mail::raw('This is a test email from SparkPost!', function ($message) {
             $message->to('macsamsonx@gmail.com')
@@ -103,8 +107,10 @@ Route::get('/useful-links', [App\Http\Controllers\PageController::class, 'useful
 Route::get('/user-guide', [App\Http\Controllers\PageController::class, 'guide'])->name('guide');
 Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
 Route::get('/tos-privacy-cookie', [App\Http\Controllers\PageController::class, 'privacy'])->name('privacy');
-Route::get('/logout-account', [App\Http\Controllers\PageController::class, 'logout'])->name('page.logout');
-
+//Route::get('/logout-account', [App\Http\Controllers\PageController::class, 'logout'])->name('page.logout');
+Route::get('/logout-account', function () {
+    return redirect('login');
+})->name('page.logout');
 Route::get('/email-footer', function () {
     return view('emails.footer_alert');
 });
