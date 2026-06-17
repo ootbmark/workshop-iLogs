@@ -245,6 +245,18 @@
             backdrop.classList.add('d-none');
         }, 200);
     }
+
+    function togglePasswordVisibility(inputId, button) {
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'bi bi-eye-fill';
+        } else {
+            input.type = 'password';
+            icon.className = 'bi bi-eye-slash-fill';
+        }
+    }
 </script>
 @yield('script')
 

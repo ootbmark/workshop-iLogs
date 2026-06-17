@@ -38,15 +38,15 @@
             <!-- ROW 2: Sub-Header Navigation -->
             <div class="border-top border-light py-2 w-100" id="subNavRow">
                 <ul class="navbar-nav d-flex flex-row gap-4 mb-0">
-                    {{--  <li class="nav-item">
-                        <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
-                            href="#">
-                            <i class="bi bi-list-nested me-1"></i> Menus
-                        </a>
-                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
-                            href="{{ route('forms.view') }}">
+                            href="/">
+                            <i class="bi bi-list-nested me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
+                            href="{{-- {{ route('forms.view') }} --}}/dashboard/forms/">
                             <i class="bi bi-file-earmark-text me-1"></i> Forms
                         </a>
                     </li>
@@ -58,13 +58,13 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
-                            href="{{ route('forms.view') }}">
+                            href="{{-- {{ route('forms.view') }} --}}/dashboard/companies">
                             <i class="bi bi-building me-1"></i> Company
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
-                            href="#">
+                            href="/dashboard/scribes">
                             <i class="bi bi-person-lines-fill me-1"></i> Participants
                         </a>
                     </li>
