@@ -302,6 +302,7 @@ class FormsController extends Controller
             return redirect(route('forms.dashboard', base64_encode($quiz->quiz_code)));
         } catch (\Throwable $th) {
             flash()->warning($th->getMessage());
+            return $th->getMessage();
             return back();
         }
     }
