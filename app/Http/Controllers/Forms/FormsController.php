@@ -124,7 +124,7 @@ class FormsController extends Controller
 
             $groups = $quiz->groups()->pluck('name', 'groups_for_quiz.id');
 
-
+            $quizReport = [];
 
             return view('forms.show', compact(
                 'quiz',
@@ -133,7 +133,8 @@ class FormsController extends Controller
                 'percent',
                 'answers',
                 'routeList',
-                'user_quiz_id'
+                'user_quiz_id',
+                'quizReport'
             ));
         } catch (\Throwable $th) {
             return $th->getMessage();
