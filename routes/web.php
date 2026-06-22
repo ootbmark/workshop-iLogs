@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\CompanyController;
 use App\Http\Controllers\Forms\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -131,6 +132,15 @@ Route::prefix('admin')->group(function () {
         */
     });
     Route::resource('groups', Forms\GroupsController::class);
+    Route::resource('companies', Forms\CompanyController::class)->names([
+        'index' => 'admin.companies.index',
+        'create' => 'admin.companies.create',
+        'store' => 'admin.companies.store',
+        'show' => 'admin.companies.show',
+        'edit' => 'admin.companies.edit',
+        'update' => 'admin.companies.update',
+        'destroy' => 'admin.companies.destroy',
+    ]);
 });
 Route::prefix('forms/v2/')->group(function () {
     Route::controller(\Forms\FormsController::class)->group(function () {

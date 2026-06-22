@@ -58,7 +58,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
-                            href="{{-- {{ route('forms.view') }} --}}/dashboard/companies">
+                            href="{{ route('admin.companies.index') }}">
                             <i class="bi bi-building me-1"></i> Company
                         </a>
                     </li>
