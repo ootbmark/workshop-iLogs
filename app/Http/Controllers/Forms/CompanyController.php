@@ -11,8 +11,7 @@ class CompanyController extends Controller
     function index()
     {
         $companyList = Company::all();
-        return $companyList;
-        return view('version2.group_view', compact('companyList'));
+        return view('version2.companies_view', compact('companyList'));
     }
     function store(Request $request)
     {
@@ -23,7 +22,7 @@ class CompanyController extends Controller
             Company::create(['name' => $request->name]);
             return back()->with('success', 'Successfully Added a Group');
         } catch (\Throwable $th) {
-            //throw $th;
+            return back()->with('error', $th->getMessage());
         }
     }
     function update(Request $request, int $data)
@@ -32,7 +31,17 @@ class CompanyController extends Controller
             Company::find($data)->update(['name' => $request->name]);
             return back()->with('success', 'Successfully Added a Group');
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            return back()->with('error', $th->getMessage());
+        }
+    }
+    function destroy(Request $request, int $data)
+    {
+        try {
+            $group = Company::find($data);
+            $group->delete();
+            return back()->with('success', 'Company deleted!');
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
         }
     }
 }

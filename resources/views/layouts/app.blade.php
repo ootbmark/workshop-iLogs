@@ -10,6 +10,7 @@
     {!! SEO::generate() !!}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    
     @yield('add-css')
 
     @include('layouts._head_scripts')

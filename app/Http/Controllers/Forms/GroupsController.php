@@ -22,7 +22,7 @@ class GroupsController extends Controller
             GroupForQuiz::create(['name' => $request->name]);
             return back()->with('success', 'Successfully Added a Group');
         } catch (\Throwable $th) {
-            //throw $th;
+            return back()->with('error', $th->getMessage());
         }
     }
     function update(Request $request, int $data)
@@ -31,20 +31,17 @@ class GroupsController extends Controller
             GroupForQuiz::find($data)->update(['name' => $request->name]);
             return back()->with('success', 'Successfully Added a Group');
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            return back()->with('error', $th->getMessage());
         }
     }
-    function destroy (Request $request, int $data)
+    function destroy(Request $request, int $data)
     {
         try {
             $group = GroupForQuiz::find($data);
             $group->delete();
             flash()->success(__('Group deleted!'));
-            /*   return redirect()->route('groups-for-quiz.index');
-            GroupForQuiz::find($data)->update(['name' => $request->name]); */
-            return back()->with('success', 'Group deleted!');
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            return back()->with('error', $th->getMessage());
         }
     }
 }

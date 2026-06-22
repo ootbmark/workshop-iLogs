@@ -46,7 +46,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
-                            href="{{-- {{ route('forms.view') }} --}}/dashboard/forms/">
+                            href="{{ route('admin.builder.index') }}">
                             <i class="bi bi-file-earmark-text me-1"></i> Forms
                         </a>
                     </li>

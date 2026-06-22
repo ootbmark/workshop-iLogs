@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\CompanyController;
 use App\Http\Controllers\Forms\DashboardController;
+use App\Http\Controllers\Forms\FormBuilderController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 /*
@@ -118,19 +119,6 @@ Route::get('/email-footer', function () {
 Route::prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
-    Route::prefix('/forms')->group(function () {
-        // Route::get('/', [GroupsController::class, 'index'])->name('forms.view');
-
-        /*
-        GET    /admin/groups
-        GET    /admin/groups/create
-        POST   /admin/groups
-        GET    /admin/groups/{group}
-        GET    /admin/groups/{group}/edit
-        PUT    /admin/groups/{group}
-        DELETE /admin/groups/{group}
-        */
-    });
     Route::resource('groups', Forms\GroupsController::class);
     Route::resource('companies', Forms\CompanyController::class)->names([
         'index' => 'admin.companies.index',
@@ -141,6 +129,16 @@ Route::prefix('admin')->group(function () {
         'update' => 'admin.companies.update',
         'destroy' => 'admin.companies.destroy',
     ]);
+    Route::resource('build-forms', Forms\FormBuilderController::class)->names([
+        'index' => 'admin.builder.index',
+        'create' => 'admin.builder.create',
+        'store' => 'admin.builder.store',
+        'show' => 'admin.builder.show',
+        'edit' => 'admin.builder.edit',
+        'update' => 'admin.builder.update',
+        'destroy' => 'admin.builder.destroy'
+    ]);
+    Route::post('build-forms/verification-update', [FormBuilderController::class, 'updateVerification'])->name('admin.builder.verification-update');
 });
 Route::prefix('forms/v2/')->group(function () {
     Route::controller(\Forms\FormsController::class)->group(function () {

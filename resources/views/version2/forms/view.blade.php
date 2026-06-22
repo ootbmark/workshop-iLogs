@@ -2,83 +2,6 @@
 @section('content')
     <section id="view-dashboard" class="container-xl py-5">
 
-        <!-- Welcome Banner -->
-        {{--   <div class="header-gradient text-white rounded-4 p-4 p-md-5 shadow-sm mb-5">
-            <div class="row align-items-center">
-                <div class="col-lg-8 text-start mb-3 mb-lg-0">
-                    <span
-                        class="badge bg-warning text-dark text-uppercase fw-extrabold px-3 py-2 rounded-pill tracking-wider mb-3">Live
-                        Session</span>
-                    <h1 class="fw-extrabold tracking-tight">Hello, <span id="dash-welcome-name">Perci Banting</span>!</h1>
-                    <p class="text-light opacity-90 mb-0">Manage, analyze, and build custom questionnaires for active
-                        workshop tracks.</p>
-                </div>
-                <div class="col-lg-4 text-start text-lg-end">
-                    <button onclick="switchView('quiz-builder')"
-                        class="btn btn-light text-navy-900 hover-bg-light fw-bold py-3 px-4 rounded-3 shadow-md">
-                        <i class="bi bi-file-earmark-plus-fill text-danger me-2"></i>
-                        Create Quiz Form
-                    </button>
-                </div>
-            </div>
-        </div> --}}
-
-        <!-- KPI Metric Grid -->
-        <div class="row g-4 mb-5 text-start">
-            <!-- Stats Card 1 -->
-            <div class="col-sm-6 col-lg-3">
-                <div class="card-custom p-4 d-flex align-items-center justify-content-between h-100">
-                    <div>
-                        <span class="text-uppercase text-muted fw-bold tracking-wider d-block mb-1"
-                            style="font-size: 11px;">Total Quizzes</span>
-                        <h3 class="fw-extrabold text-dark mb-0" id="stat-active-quizzes">{{ $monitoring['quizzes'] }}</h3>
-                    </div>
-                    <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3">
-                        <i class="bi bi-grid-3x3-gap-fill fs-3"></i>
-                    </div>
-                </div>
-            </div>
-            <!-- Stats Card 2 -->
-            <div class="col-sm-6 col-lg-3">
-                <div class="card-custom p-4 d-flex align-items-center justify-content-between h-100">
-                    <div>
-                        <span class="text-uppercase text-muted fw-bold tracking-wider d-block mb-1"
-                            style="font-size: 11px;">Companies</span>
-                        <h3 class="fw-extrabold text-dark mb-0" id="stat-submissions">{{ $monitoring['companies'] }}</h3>
-                    </div>
-                    <div class="bg-success bg-opacity-10 text-success p-3 rounded-3">
-                        <i class="bi bi-people-fill fs-3"></i>
-                    </div>
-                </div>
-            </div>
-            <!-- Stats Card 3 -->
-            {{--  <div class="col-sm-6 col-lg-3">
-                <div class="card-custom p-4 d-flex align-items-center justify-content-between h-100">
-                    <div>
-                        <span class="text-uppercase text-muted fw-bold tracking-wider d-block mb-1"
-                            style="font-size: 11px;">Focal Points Checked</span>
-                        <h3 class="fw-extrabold text-dark mb-0">100%</h3>
-                    </div>
-                    <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-3">
-                        <i class="bi bi-patch-check-fill fs-3"></i>
-                    </div>
-                </div>
-            </div> --}}
-            <!-- Stats Card 4 -->
-            <div class="col-sm-6 col-lg-3">
-                <div class="card-custom p-4 d-flex align-items-center justify-content-between h-100">
-                    <div>
-                        <span class="text-uppercase text-muted fw-bold tracking-wider d-block mb-1"
-                            style="font-size: 11px;">Group Tracks</span>
-                        <h3 class="fw-extrabold text-dark mb-0" id="stat-group-tracks">{{ $monitoring['groups'] }}</h3>
-                    </div>
-                    <div class="bg-info bg-opacity-10 text-info p-3 rounded-3">
-                        <i class="bi bi-diagram-3-fill fs-3"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Workshop / Quiz Forms List -->
         <div class="card-custom shadow-sm overflow-hidden mb-5 text-start">
             <div
@@ -86,13 +9,54 @@
                 <div>
                     <h2 class="fw-extrabold text-dark tracking-tight mb-1" style="font-size: 1.25rem;">Workshop Quizzes</h2>
                 </div>
-                <div class="position-relative" style="max-width: 280px; width: 100%;">
+                <div class="position-relative" style="max-width: 400px; width: 100%;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <button type="button" class="btn btn-primary w-100 me-2" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                            CREATE NEW FORMS
+                        </button>
+
+                        <div class="dropdown ">
+                            <button class="btn btn-outline-success w-100 px-4 dropdown-toggle" type="button"
+                                id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                EXPORT REPORT{{--  <i class="bi bi-chevron-down ms-1"></i> --}}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="exportDropdown"
+                                style="border: 1px solid var(--border-color); border-radius: 8px;">
+                                <li>
+                                    <a class="dropdown-item py-2" href="{{ route('quiz.onlyExportPdf', 1) }}">
+                                        Import Forms
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item py-2" href="{{ route('quiz.onlyExport', 1) }}">
+                                        <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i> Export all Forms to PDF
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{{ route('quiz.onlyExport', 1) }}">
+                                        <i class="bi bi-file-earmark-excel-fill text-success me-2"></i> Export all Forms to
+                                        Excel
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{{ route('quiz.onlyExport', 1) }}">
+                                        <i class="bi bi-file-earmark-excel-fill text-success me-2"></i>Export all Report to
+                                        Excel
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
                         <input type="text" id="quiz-list-search" oninput="filterQuizList()"
                             class="form-control bg-light border-start-0 shadow-none text-sm"
                             placeholder="Filter quizzes...">
                     </div>
+
                 </div>
             </div>
 
@@ -116,9 +80,105 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create New Form
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.builder.store') }}" class="" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <small class="text-muted">TITLE <span class="text-danger fw-bolder">*</span></small>
+                            <input type="text" name="title" class="form-control border border-primary">
+                            @error('title')
+                                <small class="mt-2 badge bg-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="form-group mt-3">
+                            <small class="text-muted">DESCRIPTION <span class="text-danger fw-bolder">*</span></small>
+                            <textarea name="description" id="" cols="30" rows="3" class="form-control border border-primary"></textarea>
+                            @error('description')
+                                <small class="mt-2 badge bg-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="form-group mt-3">
+                            <small class="text-muted">WORKSHOP DATE <span class="text-danger fw-bolder">*</span></small>
+                            <input type="date" name="date" class="form-control border border-primary">
+                            @error('date')
+                                <small class="mt-2 badge bg-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="form-group mt-3">
+                            <small class="text-muted">SELECT GROUPS <span
+                                    class="text-danger fw-bolder">*</span></small><sup>(Multiple Select)</sup>
+                            <select class="select-groups border border-primary" name="group[]" multiple>
+                                @foreach ($groupList as $item)
+                                    <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('group')
+                                <small class="mt-2 badge bg-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="form-group mt-3">
+                            <small class="text-muted">SELECT COMPANY <span class="text-danger fw-bolder">*</span></small>
+                            <select name="company" id="" class="form-select border border-primary">
+                                @foreach ($companies as $item)
+                                    <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                                @endforeach
+
+                            </select>
+                            @error('company')
+                                <small class="mt-2 badge bg-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <button class="btn btn-primary w-100 mt-3">SAVE</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('style')
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+            color: white !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white !important;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            border: 1px solid #0d6efd !important;
+            /* Bootstrap primary color */
+            border-radius: 0.375rem;
+            min-height: 38px;
+        }
+    </style>
 @endsection
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select-groups').select2({
+                placeholder: "Select groups",
+                width: '100%',
+                dropdownParent: $('#exampleModal')
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             renderQuizList()

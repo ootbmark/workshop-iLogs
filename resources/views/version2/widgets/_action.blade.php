@@ -31,26 +31,31 @@
         </a>
 
         <!-- Edit Details -->
-        <a href="{{ route('forms.edit', $quiz->id) }}"
+        <a href="{{ route('admin.builder.edit', base64_encode($quiz->id)) }}"
             class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0 shadow-sm hover-text-warning"
             data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit details') }}">
             <i class="bi bi-pencil-square text-warning fs-5"></i>
         </a>
-
-        <!-- Clone / Copy Quiz -->
         <button type="button"
+            onclick="triggerDeleteConfirmation('{{ $quiz->id }}', '{{ addslashes($quiz->title) }}')"
+            class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0 shadow-sm hover-text-danger"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Delete') }}">
+            <i class="bi bi-trash3-fill text-danger fs-5"></i>
+        </button>
+        <!-- Clone / Copy Quiz -->
+        {{--  <button type="button"
             class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0 shadow-sm hover-text-secondary quiz-clone"
             style="border: none" data-id="{{ $quiz->id }}" data-bs-toggle="tooltip" data-bs-placement="top"
             title="{{ __('Copy') }}">
             <i class="bi bi-copy text-secondary fs-5"></i>
-        </button>
+        </button> --}}
     </div>
     <div class="d-flex align-items-center gap-1 flex-wrap">
-        <a href="{{ route('archive_by_form.index', $quiz->id) }}"
+        {{--  <a href="{{ route('archive_by_form.index', $quiz->id) }}"
             class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0 shadow-sm hover-text-dark"
             data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Archive') }}">
             <i class="bi bi-archive-fill text-dark fs-5"></i>
-        </a>
+        </a> --}}
 
         <!-- Safe Delete Actions (No raw prompt blocks) -->
         <form id="delete-form-{{ $quiz->id }}" action="{{ route('forms.destroy', $quiz->id) }}" method="POST"
@@ -59,12 +64,7 @@
             @method('DELETE')
         </form>
 
-        <button type="button"
-            onclick="triggerDeleteConfirmation('{{ $quiz->id }}', '{{ addslashes($quiz->title) }}')"
-            class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0 shadow-sm hover-text-danger"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Delete') }}">
-            <i class="bi bi-trash3-fill text-danger fs-5"></i>
-        </button>
+
     </div>
 </div>
 
