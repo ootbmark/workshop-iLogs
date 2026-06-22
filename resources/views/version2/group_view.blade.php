@@ -35,12 +35,18 @@
                                             title="Edit User">
                                             <i class="bi bi-pencil-fill"></i>
                                         </button>
-                                        <button onclick="confirmDelete('user', '{{ $item->id }}')"
+                                        <button onclick="confirmDelete('{{ base64_encode($item->id) }}')"
                                             class="btn btn-light btn-sm text-muted p-2 rounded-3 hover-text-danger border-0"
                                             title="Delete User">
                                             <i class="bi bi-trash3-fill"></i>
                                         </button>
                                     </div>
+                                    <form id="{{ base64_encode($item->id) }}"
+                                        action="{{ route('groups.destroy', $item->id) }}" method="POST"
+                                        class="delete-form">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -103,52 +109,22 @@
 
         };
 
-        function confirmDelete(type, id) {
-            const body = document.getElementById('deleteConfirmModalBody');
-            let confirmMsg = '';
-
-            if (type === 'company') {
-                const item = companies.find(c => c.id === id);
-                if (!item) return;
-                confirmMsg =
-                    `<p>Are you sure you want to permanently delete the company profile of <strong>"${escapeHtml(item.name)}"</strong>?</p>
-                <p class="text-danger mb-0"><i class="bi bi-exclamation-circle-fill"></i> Warning: Users associated with this company will lose their organizational binding context.</p>`;
-                activeDeleteAction = () => {
-                    companies = companies.filter(c => c.id !== id);
-                    renderCompanies();
-                };
-            } else if (type === 'group') {
-                const item = groups.find(g => g.id === id);
-                if (!item) return;
-                confirmMsg =
-                    `<p>Are you sure you want to permanently delete the sector track <strong>"${escapeHtml(item.name)}"</strong>?</p>
-                <p class="text-danger mb-0"><i class="bi bi-exclamation-circle-fill"></i> Warning: All active dashboard registrations and counts associated with this track will be deleted.</p>`;
-                activeDeleteAction = () => {
-                    groups = groups.filter(g => g.id !== id);
-                    renderGroups();
-                };
-            } else if (type === 'user') {
-                const item = users.find(u => u.id === id);
-                if (!item) return;
-                confirmMsg =
-                    `<p>Are you sure you want to permanently revoke system privileges of user <strong>"${escapeHtml(item.name)}"</strong>?</p>
-                <p class="text-danger mb-0"><i class="bi bi-exclamation-circle-fill"></i> Warning: This profile directory cannot be recovered.</p>`;
-                activeDeleteAction = () => {
-                    users = users.filter(u => u.id !== id);
-                    renderUsers();
-                    renderGroups(); // Refactor active counter
-                };
-            }
-
-            body.innerHTML = confirmMsg;
-
-            // Bind Proceed Buttons
-            document.getElementById('deleteConfirmBtn').onclick = function() {
-                if (activeDeleteAction) activeDeleteAction();
-                confirmInstance.hide();
-            };
-
-            confirmInstance.show();
+        function confirmDelete(data) {
+            console.log(data)
+            const form = document.getElementById(data);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to undo this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         }
 
         function openCompanyForm(editId) {

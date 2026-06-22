@@ -34,4 +34,17 @@ class GroupsController extends Controller
             return $th->getMessage();
         }
     }
+    function destroy (Request $request, int $data)
+    {
+        try {
+            $group = GroupForQuiz::find($data);
+            $group->delete();
+            flash()->success(__('Group deleted!'));
+            /*   return redirect()->route('groups-for-quiz.index');
+            GroupForQuiz::find($data)->update(['name' => $request->name]); */
+            return back()->with('success', 'Group deleted!');
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
 }
