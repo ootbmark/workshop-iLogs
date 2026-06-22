@@ -71,4 +71,8 @@ class UserQuiz extends Model
     {
         return $this->hasMany(User::class, 'id', 'user_id');
     }
+    function group()
+    {
+        return $this->belongsTo(GroupForQuiz::class, 'group_id');
+    }
 }

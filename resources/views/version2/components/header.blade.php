@@ -64,7 +64,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-secondary fw-semibold px-0 py-1 hover-text-navy transition-all"
-                            href="/dashboard/scribes">
+                            href="{{ route('admin.participants.index') }}">
                             <i class="bi bi-person-lines-fill me-1"></i> Participants
                         </a>
                     </li>

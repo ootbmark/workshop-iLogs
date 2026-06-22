@@ -141,6 +141,16 @@ Route::prefix('admin')->group(function () {
     Route::post('build-forms/verification-update', [FormBuilderController::class, 'updateVerification'])->name('admin.builder.verification-update');
     Route::get('build-forms/{data}/reports', [FormBuilderController::class, 'reviewReports'])->name('admin.builder.view-report');
     Route::get('build-forms/{data}/reports-participant', [FormBuilderController::class, 'scribesDataTable'])->name('admin.builder.view-report-participant');
+
+    Route::resource('participants', Forms\ParticipantsController::class)->names([
+        'index' => 'admin.participants.index',
+        'create' => 'admin.participants.create',
+        'store' => 'admin.participants.store',
+        'show' => 'admin.participants.show',
+        'edit' => 'admin.participants.edit',
+        'update' => 'admin.participants.update',
+        'destroy' => 'admin.participants.destroy'
+    ]);
 });
 Route::prefix('forms/v2/')->group(function () {
     Route::controller(\Forms\FormsController::class)->group(function () {
