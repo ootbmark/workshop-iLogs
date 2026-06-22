@@ -139,6 +139,8 @@ Route::prefix('admin')->group(function () {
         'destroy' => 'admin.builder.destroy'
     ]);
     Route::post('build-forms/verification-update', [FormBuilderController::class, 'updateVerification'])->name('admin.builder.verification-update');
+    Route::get('build-forms/{data}/reports', [FormBuilderController::class, 'reviewReports'])->name('admin.builder.view-report');
+    Route::get('build-forms/{data}/reports-participant', [FormBuilderController::class, 'scribesDataTable'])->name('admin.builder.view-report-participant');
 });
 Route::prefix('forms/v2/')->group(function () {
     Route::controller(\Forms\FormsController::class)->group(function () {

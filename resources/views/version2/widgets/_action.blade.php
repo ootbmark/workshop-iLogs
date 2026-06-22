@@ -16,7 +16,7 @@
         </a>
 
         <!-- View Reports -->
-        <a href="{{ route('quiz-reports', $quiz->id) }}"
+        <a href="{{ route('admin.builder.view-report', base64_encode($quiz->id)) }}"
             class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0 shadow-sm hover-text-primary"
             data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Report') }}">
             <i class="bi bi-file-earmark-bar-graph-fill text-primary fs-5"></i>
@@ -24,7 +24,7 @@
     </div>
     <div class="d-flex align-items-center gap-1 flex-wrap">
         <!-- Live Preview -->
-        <a href="{{ route('quiz.preview', $quiz->slug) }}" target="_blank"
+        <a href="{{ route('admin.builder.show', base64_encode($quiz->id)) }}" target="_blank"
             class="btn btn-light btn-sm text-muted p-2 rounded-3 border-0 shadow-sm hover-text-info"
             data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Preview') }}">
             <i class="bi bi-eye-fill text-info fs-5"></i>

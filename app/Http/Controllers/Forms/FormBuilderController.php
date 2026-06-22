@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\GroupForQuiz;
 use App\Models\Quiz;
+use App\Models\QuizReport;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class FormBuilderController extends Controller
 {
@@ -89,7 +91,58 @@ class FormBuilderController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $quiz = Quiz::find(base64_decode($id));
+            if ($quiz) {
+                $questions = $quiz->questions;
+                // return $questions;
+                $questionList = [];
+                foreach ($questions as $key => $value) {
+                    $answerList = [];
+                    $answer =  $value->answers;
+                    foreach ($answer as $key => $value1) {
+                        $answerList[] = array(
+                            'answerId' => $value1->id,
+                            'title' => $value1->title,
+                        );
+                    }
+                    $questionList[] = array(
+                        'question_id' => $value->id,
+                        'title' => $value->title,
+                        'type' => $value->type,
+                        'is_required' => $value->question_required,
+                        'answer' => $answerList
+                    );
+                }
+                $user_quiz_id = '';
+                //return $request;
+                $participant = [];
+                $participantQuiz = null;
+                $routeList = [1, 2];
+
+
+
+                $answers = $participantQuiz
+                    ? $participantQuiz->quiz_answers->groupBy('question_id')->toArray()
+                    : [];
+
+                $groups = $quiz->groups()->pluck('name', 'groups_for_quiz.id');
+                $user_quiz_id = '';
+                $quizReport = [];
+                //return $questionList;
+                return view('version2.forms.preview', compact(
+                    'quiz',
+                    'answers',
+                    'quizReport',
+                    'user_quiz_id'
+                ));
+            } else {
+                back()->with('error', 'Missing Quiz');
+            }
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+            return back()->with('error', $th->getMessage());
+        }
     }
 
     /**
@@ -177,5 +230,40 @@ class FormBuilderController extends Controller
             ], 500);
         }
         return $request;
+    }
+    function reviewReports($data)
+    {
+        try {
+            $quiz = Quiz::find(base64_decode($data));
+            $user_quiz_id = '';
+            return view('version2.forms.reports', compact('quiz', 'user_quiz_id'));
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
+    }
+    function scribesDataTable($data)
+    {
+        $quizId = base64_decode($data);
+        $quizReports = QuizReport::where('quiz_id', base64_decode($data))->orderByDesc('id')->get();
+        //return $quizReports;
+        foreach ($quizReports as $key => $quiz) {
+            $quizReportTable[] = array(
+                'id' => $quiz->id,
+                'name' => $quiz->name,
+                'questionCount' => $quiz->questions_count,
+                'answerCount' => $quiz->questions_answers,
+                'quizTitle' => $quiz->quiz->title,
+                'company' => $quiz->quiz->company->name,
+                'value' => $quiz->status,
+                'effort' => $quiz->status_effort,
+                'report_status' => $quiz->report_status,
+                'group_name' => $quiz->group->name ?? '',
+                'first_question' =>  optional($quiz->quiz_answers->first())->text ?? '',
+                'actions' =>  view('dashboard.quiz.custom._report_actions', ['quiz_report' => $quiz])->render()
+            );
+        }
+        return DataTables::of($quizReportTable)
+            ->rawColumns(['actions'])
+            ->make(true);
     }
 }
