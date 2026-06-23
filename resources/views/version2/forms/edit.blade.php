@@ -426,15 +426,7 @@
         // Add a new question object to builder canvas
         function addQuestionCard(questionCode = null, title = "", type = "text", required = false, tooltip = "", options) {
             const qId = 'Q-' + Date.now() + Math.random().toString(36).substr(2, 4);
-            const optionList = options === null ? [{
-                    optionCode: null,
-                    option: 'Yes'
-                },
-                {
-                    optionCode: null,
-                    option: 'No'
-                }
-            ] : options;
+            const optionList = options;
             const question = {
                 id: qId,
                 questionCode,
@@ -474,6 +466,16 @@
             activeQuestions.forEach((q, index) => {
                 const card = document.createElement('div');
                 card.className = "p-4 rounded-3 border bg-light shadow-sm hover-border-secondary";
+                q.optionList = q.optionList ?? [{
+                        optionCode: null,
+                        option: 'Yes'
+                    },
+                    {
+                        optionCode: null,
+                        option: 'No'
+                    }
+                ];
+                console.log(q.optionList)
                 // Construct Options Sub-panel if choice type
                 let optionsHtml = '';
                 if (['radio', 'multiple', 'dropdown'].includes(q.type)) {
@@ -573,8 +575,8 @@
                             <label class="form-label text-uppercase text-muted fw-bold mb-1" style="font-size: 10px;">Answer Selection Input Type</label>
                             <select onchange="updateQuestionField('${q.id}', 'type', this.value)" class="form-select bg-white shadow-none text-muted">
                                 ${questionTypes.map(t => `
-                                                                                                                                            <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
-                                                                                                                                        `).join('')}
+                                                                                                                                                    <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
+                                                                                                                                                `).join('')}
                             </select>
                         </div>
                     </div>
@@ -596,7 +598,7 @@
                 if (field === 'type') {
                     // Reset defaults for clean switches
                     if (['radio', 'dropdown'].includes(value)) {
-                        q.options = [{
+                        q.optionList = [{
                                 optionCode: null,
                                 option: 'Yes'
                             },
@@ -606,7 +608,7 @@
                             }
                         ];
                     } else if (value === 'multiple') {
-                        q.options = [{
+                        q.optionList = [{
                                 optionCode: null,
                                 option: 'Option A'
                             },
@@ -633,13 +635,14 @@
         }
 
         function addQuestionOption(qId) {
+            console.log(qId)
             const q = activeQuestions.find(item => item.id === qId);
-            if (q && q.options) {
+            if (q && q.optionList) {
                 const addItem = {
                     optionCode: null,
-                    option: `New Option ${q.options.length + 1}`
+                    option: `New Option ${q.optionList.length + 1}`
                 }
-                q.options.push(addItem);
+                q.optionList.push(addItem);
                 renderQuestionCards();
             }
         }

@@ -305,20 +305,44 @@ class FormBuilderController extends Controller
                     $check =  Question::create($data);
                 }
                 if ($request->optionList) {
-                    foreach ($request->optionList as $key => $value) {
-                        Answer::create([
-                            'question_id' => $check->id,
-                            'title' => $value,
-                        ]);
+                    foreach ($request->optionList as $value) {
+
+                        if (!empty($value['optionCode'])) {
+                            Answer::find($value['optionCode'])->update([
+                                'question_id' => $check->id,
+                                'title' => $value['option'],
+                            ]);
+                        } else {
+                            Answer::create([
+                                'question_id' => $check->id,
+                                'title' => $value['option'],
+                            ]);
+                        }
                     }
                 }
             } else {
                 $question = Question::find($request->questionCode);
                 $question->update($data);
+                if ($request->optionList) {
+                    foreach ($request->optionList as $value) {
+
+                        if (!empty($value['optionCode'])) {
+                            Answer::find($value['optionCode'])->update([
+                                'question_id' => $question->id,
+                                'title' => $value['option'],
+                            ]);
+                        } else {
+                            Answer::create([
+                                'question_id' => $question->id,
+                                'title' => $value['option'],
+                            ]);
+                        }
+                    }
+                }
             }
-            return $quiz;
+            return response(['data' => 'Successfully Save'], 200);
         } catch (\Throwable $th) {
-            return back()->with('error', $th->getMessage());
+            return response(['error' => $th->getMessage()], 200);
         }
     }
 }
