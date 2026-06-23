@@ -1,160 +1,184 @@
 @extends('forms.app')
 @section('content')
     <style>
-        <style> :root {
-            --bs-body-bg: #f3f5f9;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-            --accent-primary: #101a36;
-            /* Deep Navy */
-            --accent-blue: #3f51b5;
-            /* Royal SPREAD Blue */
-            --accent-hover: #2c387e;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bs-body-bg);
+        /* General Forms elements */
+        .form-label {
+            font-weight: 600;
             color: var(--text-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            margin: 0;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
         }
 
-        .portal-breadcrumb {
+        .required-asterisk {
+            color: #dc3545;
+            margin-left: 0.2rem;
+        }
+
+        .form-control,
+        .form-select {
             background-color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.75rem 2rem;
+            border: 1px solid #cbd5e1;
+            color: var(--text-dark);
+            border-radius: 6px;
+            padding: 12px 16px;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: #ffffff;
+            border-color: #5c6bc0;
+            color: var(--text-dark);
+            box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.15);
+        }
+
+        .code-input {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            letter-spacing: 0.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* Primary action button */
+        .btn-spread-submit {
+            background-color: #101a36;
+            color: #ffffff;
+            font-weight: 700;
             font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 12px 42px;
+            border-radius: 4px;
+            border: none;
+            transition: all 0.2s ease;
         }
 
-        .portal-breadcrumb a {
-            color: var(--text-muted);
-            text-decoration: none;
+        .btn-spread-submit:hover {
+            background-color: #1e2e5c;
+            color: #ffffff;
         }
 
-        .portal-breadcrumb a:hover {
-            color: var(--accent-blue);
+        .btn-spread-secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 12px 24px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
         }
 
-        .summary-container {
-            max-width: 1200px;
-            width: 100%;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+        .btn-spread-secondary:hover {
+            background-color: #e2e8f0;
+            color: #334155;
         }
 
-        /* Metric Indicators Styling */
-        .metric-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
-        }
-
-        .metric-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        /* Primary layout panel styling */
-        .summary-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            padding: 2.5rem;
-        }
-
+        /* Dashboard Table Styling */
         .table-container {
             border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden;
             background-color: #ffffff;
+            padding: 1rem;
         }
 
         .table-spread {
             margin-bottom: 0;
             font-size: 0.9rem;
+            width: 100% !important;
         }
 
         .table-spread th {
-            background-color: #f8fafc;
+            background-color: #ffffff;
             color: #475569;
             font-weight: 600;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color) !important;
             padding: 14px 16px;
+            text-transform: capitalize;
         }
 
         .table-spread td {
             padding: 14px 16px;
             vertical-align: middle;
             color: #334155;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color) !important;
         }
 
-        .table-spread tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .progress-bar-sm {
-            height: 8px;
-            border-radius: 4px;
-            background-color: #eaeaf5;
-        }
-
-        .progress-bar-sm-fill {
-            height: 100%;
-            background-color: #5c6bc0;
-            border-radius: 4px;
-        }
-
-        .btn-view-details {
-            background-color: #f1f5f9;
-            color: #475569;
-            border: 1px solid #cbd5e1;
-            font-weight: 600;
-            font-size: 0.8rem;
-            padding: 6px 14px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .btn-view-details:hover {
-            background-color: #e2e8f0;
-            color: #1e293b;
-        }
-
-        .form-control-search {
-            max-width: 300px;
+        /* Styling DataTables UI Components to match portal theme */
+        .dataTables_wrapper .dataTables_filter input {
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             padding: 8px 14px;
+            background-color: #ffffff;
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            outline: none;
+            margin-left: 0.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #5c6bc0;
+            box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.15);
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 6px 30px 6px 12px;
+            outline: none;
             font-size: 0.85rem;
         }
 
-        .form-control-search:focus {
+        .dataTables_wrapper .dataTables_length select:focus {
             border-color: #5c6bc0;
-            box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.15);
-            outline: none;
         }
-    </style>
+
+        .page-item.active .page-link {
+            background-color: #5c6bc0 !important;
+            border-color: #5c6bc0 !important;
+            color: #ffffff !important;
+        }
+
+        .page-link {
+            color: #5c6bc0;
+            border-radius: 6px;
+            margin: 0 2px;
+            font-weight: 600;
+        }
+
+        .page-link:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Action Icons */
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .action-btn.view-btn {
+            color: #6366f1;
+        }
+
+        .action-btn.edit-btn {
+            color: #f59e0b;
+        }
+
+        .action-btn.delete-btn {
+            color: #ef4444;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
     </style>
     <div class="survey-header-section">
         <h1 class="survey-title"><b>{{ $quiz->title }}</b></h1>
@@ -162,39 +186,26 @@
             {{ $quiz->description }}
         </p>
     </div>
-    <div class="summary-card">
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-            <div>
-                <h3 class="fw-bold text-dark m-0">Groups Participation</h3>
-                <p class="text-muted small mb-0">Overview of submission counts grouped by workshop tracks from
-                    image_5e295c.png.</p>
-            </div>
-            <div>
-                <input type="text" id="search-group" class="form-control-search" placeholder="Search workspace group..."
-                    oninput="filterGroupsTable()">
-            </div>
+    <div class="survey-card">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <h3 class="fw-bold text-dark m-0">Groups Participation</h3>
         </div>
-
-        <!-- Main Data Table -->
         <div class="table-container">
             <div class="table-responsive">
-                <table class="table table-spread align-middle">
+                <table id="groups-table-v2" class="table table-spread align-middle">
                     <thead>
                         <tr>
                             <th>Group Name</th>
                             <th>Submissions Count</th>
                             <th>Participation Weight</th>
-                            <th class="text-end">Actions</th>
+                            {{--    <th class="text-end">Actions</th> --}}
                         </tr>
                     </thead>
-                    <tbody id="groups-table-body">
-                        <!-- Populated dynamically via JS -->
+                    <tbody>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
-
     </div>
 
     <!-- Drill-down Group Directory Modal -->
@@ -498,7 +509,83 @@
         window.onload = function() {
             bootstrapMembersModal = new bootstrap.Modal(document.getElementById('membersModal'));
             processGroupedMetrics();
-            renderGroupsTable();
+            // renderGroupsTable();
         };
+    </script>
+@endsection
+@section('scripts')
+    <script src="/metronic/js/plugins/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script>
+        let table = $('#groups-table-v2').DataTable({
+            ajax: {
+                url: `{{ route('forms.group-details', base64_encode($quiz->quiz_code)) }}`,
+                dataSrc: 'data'
+            },
+            columns: [{
+                    data: 'name',
+                    render: function(data) {
+                        return `
+                    <span class="fw-bold text-dark">
+                        ${data}
+                    </span>
+                `;
+                    }
+                },
+                {
+                    data: 'totalParticipants',
+                    className: 'text-start',
+                    render: function(data) {
+                        return `
+                    <span class="badge rounded-pill px-3 py-2"
+                          style="background:#eef2ff;color:#5b5bd6;">
+                        ${data} Submissions
+                    </span>
+                `;
+                    }
+                },
+                {
+                    data: 'participationWeight',
+                    render: function(data) {
+                        return `
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="progress flex-grow-1"
+                             style="height:8px;background:#eef0ff;">
+                            <div class="progress-bar"
+                                 style="width:${data}%;background:#6267d9;">
+                            </div>
+                        </div>
+                        <span class="text-muted fw-semibold">
+                            ${data}%
+                        </span>
+                    </div>
+                `;
+                    }
+                },
+                /* {
+                    data: 'id',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-end',
+                    render: function(data) {
+                        return `
+                <a href="#"
+                   class="btn btn-outline-secondary btn-sm px-3">
+                    <i class="bi bi-eye me-1"></i>
+                    View Directory
+                </a>
+            `;
+                    }
+                } */
+            ],
+            paging: false,
+            info: false,
+            ordering: false,
+            responsive: true
+        });
+        // Refresh every 5 seconds
+        setInterval(function() {
+            console.log('Reloading')
+            table.ajax.reload(null, false); // false = keep current page
+        }, 50000);
     </script>
 @endsection

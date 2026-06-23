@@ -361,45 +361,8 @@
         });
     </script>
     <script>
-        // Mock workshops dataset - matching previous image parameters
-        let quizzes = [{
-                id: "QZ-RISER",
-                title: "AI Technology Awareness and Usage",
-                groupTrack: "Riserless Casing, BOP",
-                desc: "This survey gathers seminar evaluations regarding AI technology, safety, and awareness on BOP protocols.",
-                focal: "John Doe (Drilling Engr.)",
-                actionee: "Alex Smith (Service Co rep.)",
-                targetDate: "2026-06-30",
-                questionsCount: 6,
-                submissions: 20
-            },
-            {
-                id: "QZ-LINER",
-                title: "Driller Liner & Plug Assessment",
-                groupTrack: "Driller Liner(s), P&A",
-                desc: "Technical review on plug integrity and liner deployment techniques.",
-                focal: "Jason Lavis",
-                actionee: "Representative Alpha",
-                targetDate: "2026-07-15",
-                questionsCount: 5,
-                submissions: 12
-            },
-            {
-                id: "QZ-DEEPER",
-                title: "Deformation Modeling & Deep Bore Drilling",
-                groupTrack: "Deeper Drilling",
-                desc: "Gathering evaluations on high pressure deep drilling configurations.",
-                focal: "PERCI BANTING",
-                actionee: "Service Co Rep Delta",
-                targetDate: "2026-08-01",
-                questionsCount: 4,
-                submissions: 8
-            }
-        ];
-
         // Question cards build state tracking inside current editor
         let activeQuestions = [];
-
         // Predefined question templates
         const questionTypes = [{
                 value: 'radio',
@@ -433,22 +396,27 @@
         // Dynamic Builder Core State
         function initBuilderState() {
             const questionList = @json($questionList);
-            questionList.forEach(q => {
-                // Extract option titles into a clean array of strings: ["Yes", "No"]
-                const optionTitles = q.answer ? q.answer.map(opt => opt.title) : [];
+            console.log(questionList)
+            if (questionList.length > 0) {
+                questionList.forEach(q => {
+                    // Extract option titles into a clean array of strings: ["Yes", "No"]
+                    const optionTitles = q.answer ? q.answer.map(opt => opt.title) : [];
 
-                // Map 'is_required' integer (1/0) to boolean (true/false)
-                const isRequired = q.is_required === 1;
+                    // Map 'is_required' integer (1/0) to boolean (true/false)
+                    const isRequired = q.is_required === 1;
 
-                // Push it into the builder canvas
-                addQuestionCard(
-                    q.title,
-                    q.type,
-                    isRequired,
-                    `Question ID: ${q.question_id}`, // Using ID as a placeholder tooltip
-                    optionTitles
-                );
-            });
+                    // Push it into the builder canvas
+                    addQuestionCard(
+                        q.question,
+                        q.title,
+                        q.type,
+                        isRequired,
+                        `Question ID: ${q.question_id}`, // Using ID as a placeholder tooltip
+                        q.answer
+                    );
+                });
+            }
+
             /* // Start with two default clean questions to preview
             addQuestionCard("Have you heard of Artificial Intelligence (AI) before?", "radio", true,
                 "Provide basic user experience level checklist parameters.");
@@ -457,15 +425,17 @@
         }
 
         // Add a new question object to builder canvas
-        function addQuestionCard(title = "", type = "text", required = true, tooltip = "") {
+        function addQuestionCard(questionCode = null, title = "", type = "text", required = false, tooltip = "", options) {
             const qId = 'Q-' + Date.now() + Math.random().toString(36).substr(2, 4);
+            const optionList = options === null ? ['Yes', 'No'] : options;
             const question = {
                 id: qId,
+                questionCode,
                 title,
                 type,
                 required,
                 tooltip,
-                options: ["Yes", "No"] // Default options for choice types
+                optionList // Default options for choice types
             };
 
             activeQuestions.push(question);
@@ -506,13 +476,13 @@
                             <label class="form-label text-uppercase text-muted fw-extrabold mb-2" style="font-size: 10px; tracking-wider;">Configure Selection Options</label>
                             <div class="vstack gap-2" id="options-box-${q.id}">
                                 ${q.options.map((opt, oIdx) => `
-                                                                                                                                                                            <div class="d-flex align-items-center gap-2">
-                                                                                                                                                                                <input type="text" value="${opt}" oninput="updateQuestionOption('${q.id}', ${oIdx}, this.value)" class="form-control form-control-sm bg-light border-0 py-2">
-                                                                                                                                                                                <button onclick="removeQuestionOption('${q.id}', ${oIdx})" class="btn btn-link text-muted hover-text-danger p-1" title="Remove Option">
-                                                                                                                                                                                    <i class="bi bi-x-circle fs-5"></i>
-                                                                                                                                                                                </button>
-                                                                                                                                                                            </div>
-                                                                                                                                                                        `).join('')}
+                                                                                                        <div class="d-flex align-items-center gap-2">
+                                                                                                            <input type="text" value="${opt}" oninput="updateQuestionOption('${q.id}', ${oIdx}, this.value)" class="form-control form-control-sm bg-light border-0 py-2">
+                                                                                                            <button onclick="removeQuestionOption('${q.id}', ${oIdx})" class="btn btn-link text-muted hover-text-danger p-1" title="Remove Option">
+                                                                                                                <i class="bi bi-x-circle fs-5"></i>
+                                                                                                            </button>
+                                                                                                        </div>
+                                                                                                    `).join('')}
                             </div>
                             <button onclick="addQuestionOption('${q.id}')" class="btn btn-link text-decoration-none text-spreadBlue-500 fw-bold small p-0 mt-2 d-inline-flex align-items-center gap-1">
                                 <i class="bi bi-plus-circle"></i> Add Option
@@ -566,6 +536,10 @@
                             <button onclick="removeQuestionCard('${q.id}')" class="btn btn-outline-danger p-2 rounded-3" title="Remove Question">
                                 <i class="bi bi-trash-fill fs-6"></i>
                             </button>
+                             <!-- Save button -->
+                            <button onclick="saveQuestionCard('${q.id}')" class="btn btn-outline-primary p-2 rounded-3" title="Save Question">
+                                <i class="bi bi-save fs-6"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -580,8 +554,8 @@
                             <label class="form-label text-uppercase text-muted fw-bold mb-1" style="font-size: 10px;">Answer Selection Input Type</label>
                             <select onchange="updateQuestionField('${q.id}', 'type', this.value)" class="form-select bg-white shadow-none text-muted">
                                 ${questionTypes.map(t => `
-                                                                                                                                                                            <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
-                                                                                                                                                                        `).join('')}
+                                                                                                                                                                                                                                                                                                            <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
+                                                                                                                                                                                                                                                                                                        `).join('')}
                             </select>
                         </div>
                     </div>
@@ -635,6 +609,11 @@
             }
         }
 
+        function saveQuestionCard(data) {
+            const question = activeQuestions.filter(q => q.id === data);
+            console.log(question)
+            //renderQuestionCards();
+        }
         // Form Publishing Submission Verification
         function handleSaveQuiz() {
             const title = document.getElementById('quiz-title').value.trim();
@@ -704,7 +683,7 @@
                 submissions: 0 // Deployed as new
             };
 
-            quizzes.unshift(newQuiz);
+            // quizzes.unshift(newQuiz);
 
             showNotification(
                 "success",

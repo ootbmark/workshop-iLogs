@@ -169,5 +169,6 @@ Route::prefix('forms/v2/')->group(function () {
 
         Route::get('/share-workshop-link', 'shareLink')->name('forms.show-qrcode');
         Route::get('/workshop-dashboard/{data}', 'workshopDashboard')->name('forms.workshop-dashboard');
+        Route::get('/data/{data}', 'fetchWorkShopData')->name('forms.group-details');
     });
 });

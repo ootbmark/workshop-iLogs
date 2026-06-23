@@ -398,7 +398,46 @@ class FormsController extends Controller
     function workshopDashboard(Request $request, $data)
     {
         $quiz = Quiz::where('quiz_code', base64_decode($data))->first();
-        return view('forms.workshop_dashboard', compact('quiz'));
+        $quizAnswers = $quiz->groups()->get();
+        $groupDetails = [];
+        foreach ($quizAnswers as $key => $value) {
+            $participantList = UserQuiz::where('quiz_id', $quiz->id)->where('group_id', $value->id)->get();
+            $groupDetails[] = array(
+                'name' => $value->name,
+                'totalParticipants' => count($participantList),
+                'participants' => $participantList
+            );
+        }
+        // return  $groupDetails;
+        return view('forms.workshop_dashboard', compact('quiz', 'groupDetails'));
+    }
+    function fetchWorkShopData($data)
+    {
+        try {
+            $quiz = Quiz::where('quiz_code', base64_decode($data))->firstOrFail();
+            $groups = $quiz->groups()->get();
+            $totalParticipants = UserQuiz::where('quiz_id', $quiz->id)->count();
+            $groupDetails = $groups->map(function ($group) use ($quiz, $totalParticipants) {
+                $count = UserQuiz::where('quiz_id', $quiz->id)
+                    ->where('group_id', $group->id)
+                    ->count();
+                return [
+                    'id' => $group->id,
+                    'name' => $group->name,
+                    'totalParticipants' => $count,
+                    'participationWeight' => $totalParticipants > 0
+                        ? round(($count / $totalParticipants) * 100, 1)
+                        : 0,
+                ];
+            });
+            return DataTables::of($groupDetails)->make(true);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
     function viewQuizReport(string $code, string $scribe)
     {

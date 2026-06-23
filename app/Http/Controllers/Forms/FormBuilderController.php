@@ -172,7 +172,7 @@ class FormBuilderController extends Controller
                         );
                     }
                     $questionList[] = array(
-                        'question_id' => $value->id,
+                        'question' => $value->id,
                         'title' => $value->title,
                         'type' => $value->type,
                         'is_required' => $value->question_required,
@@ -265,5 +265,16 @@ class FormBuilderController extends Controller
         return DataTables::of($quizReportTable)
             ->rawColumns(['actions'])
             ->make(true);
+    }
+
+
+    /* Form Builder */
+    /* Store Question */
+    function storeQuestion(Request $request)
+    {
+        try {
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
     }
 }
