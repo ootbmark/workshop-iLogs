@@ -7,14 +7,14 @@
             <!-- Left Sidebar - Metadata Config -->
             <div class="col-lg-4">
                 <div class="card-custom p-4 mb-4">
-                    <h3 class="fw-bold text-dark border-bottom pb-3 mb-3" style="font-size: 1.15rem;">Quiz Properties</h3>
+                    <h3 class="fw-bold text-dark border-bottom pb-3 mb-3" style="font-size: 1.15rem;">iLogs Properties</h3>
                     <form action="{{ route('admin.builder.update', $quiz->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
                             <label for="quiz-title"
                                 class="form-label text-uppercase text-muted fw-bold small tracking-wider mb-1"
-                                style="font-size: 11px;">Workshop Quiz Title <span class="text-danger">*</span></label>
+                                style="font-size: 11px;">Workshop Title <span class="text-danger">*</span></label>
                             <input name="title" type="text" class="form-control py-2.5 bg-light border-0 shadow-none"
                                 value="{{ $quiz->title }}">
                             @error('title')
@@ -75,11 +75,6 @@
                         </div>
                         <button class="btn btn-primary w-100 mt-3">UPDATED</button>
                     </form>
-
-
-
-
-
                 </div>
 
                 <!-- SPREAD Target Entities Configurations -->
@@ -575,8 +570,8 @@
                             <label class="form-label text-uppercase text-muted fw-bold mb-1" style="font-size: 10px;">Answer Selection Input Type</label>
                             <select onchange="updateQuestionField('${q.id}', 'type', this.value)" class="form-select bg-white shadow-none text-muted">
                                 ${questionTypes.map(t => `
-                                                                                                                                                    <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
-                                                                                                                                                `).join('')}
+                                                                                                                                                        <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
+                                                                                                                                                    `).join('')}
                             </select>
                         </div>
                     </div>

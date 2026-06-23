@@ -30,7 +30,7 @@
                 <div class="card-custom p-4 d-flex align-items-center justify-content-between h-100">
                     <div>
                         <span class="text-uppercase text-muted fw-bold tracking-wider d-block mb-1"
-                            style="font-size: 11px;">Total Quizzes</span>
+                            style="font-size: 11px;">Total iLogs</span>
                         <h3 class="fw-extrabold text-dark mb-0" id="stat-active-quizzes">{{ $monitoring['quizzes'] }}</h3>
                     </div>
                     <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3">
@@ -84,14 +84,13 @@
             <div
                 class="p-4 border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
                 <div>
-                    <h2 class="fw-extrabold text-dark tracking-tight mb-1" style="font-size: 1.25rem;">Workshop Quizzes</h2>
+                    <h2 class="fw-extrabold text-dark tracking-tight mb-1" style="font-size: 1.25rem;">Workshop iLogs</h2>
                 </div>
                 <div class="position-relative" style="max-width: 280px; width: 100%;">
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
                         <input type="text" id="quiz-list-search" oninput="filterQuizList()"
-                            class="form-control bg-light border-start-0 shadow-none text-sm"
-                            placeholder="Filter quizzes...">
+                            class="form-control bg-light border-start-0 shadow-none text-sm" placeholder="Filter ilogs...">
                     </div>
                 </div>
             </div>
@@ -103,9 +102,9 @@
                             style="font-size: 11px; border-bottom: 2px solid #cbd5e1;">
                             <th class="py-3 px-4">Quiz / Form Title</th>
                             <th class="py-3 px-4">Assigned Group Track</th>
-                            <th class="py-3 px-4 text-center">Questions</th>
-                            <th class="py-3 px-4 text-center">Responses</th>
-                            <th class="py-3 px-4">Target Date</th>
+                            <th class="py-3 px-4 text-center">COMPANY</th>
+                            <th class="py-3 px-4 text-center">FACILITATOR</th>
+                            <th class="py-3 px-4">QR-CODE</th>
                             <th class="py-3 px-4 text-end">Actions</th>
                         </tr>
                     </thead>
