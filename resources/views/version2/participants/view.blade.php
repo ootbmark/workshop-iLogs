@@ -5,7 +5,7 @@
             <div
                 class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 border-bottom pb-3 mb-4">
                 <div class="text-start">
-                    <h3 class="fw-extrabold text-dark mb-1">Participants</h3>
+                    <h3 class="fw-extrabold text-dark mb-1">Scribes</h3>
                     {{--  <p class="text-muted small mb-0">Add or edit operational companies, sub-contractors, and education
                         institutions.</p> --}}
                 </div>

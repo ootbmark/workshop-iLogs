@@ -168,8 +168,8 @@
             @elseif($question->type === 'dropdown')
                 <div {{ $question->question_required ? 'data-required=1' : '' }}>
                     <div class="form-group">
-                        <select class="form-select custom-select" name="answers[{{ $question->id }}]"
-                            data-id="{{ $question->id }}" aria-label="select">
+                        <select class="form-select border border-primary custom-select"
+                            name="answers[{{ $question->id }}]" data-id="{{ $question->id }}" aria-label="select">
                             <option value="">Option...</option>
                             @foreach ($question->answers as $answer)
                                 <option value="{{ $answer->id }}"
@@ -199,15 +199,16 @@
                 </div>
             @elseif($question->type === 'text')
                 <div class="form-group" {{ $question->question_required ? 'data-required=1' : '' }}>
-                    <input type="text" class="form-control text" name="answers[{{ $question->id }}][text]"
+                    <input type="text" class="form-control border border-primary text"
+                        name="answers[{{ $question->id }}][text]"
                         value="{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}"
                         data-id="{{ $question->id }}" aria-label="input">
                     <small class="text-danger error d-none">This field is required</small>
                 </div>
             @elseif($question->type === 'textarea')
                 <div class="form-group" {{ $question->question_required ? 'data-required=1' : '' }}>
-                    <textarea class="form-control textarea" name="answers[{{ $question->id }}][text]" rows="3"
-                        data-id="{{ $question->id }}" aria-label="textarea">{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}</textarea>
+                    <textarea class="form-control border border-primary textarea" name="answers[{{ $question->id }}][text]"
+                        rows="3" data-id="{{ $question->id }}" aria-label="textarea">{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}</textarea>
                     <small class="text-danger error d-none">This field is required</small>
                 </div>
             @elseif($question->type === 'circling')
@@ -238,8 +239,9 @@
                         @endforeach
                     </div>
                     <div class="form-group textarea">
-                        <textarea class="form-control textarea" name="answers[{{ $question->id }}][comment]" rows="3"
-                            data-id="{{ $question->id }}" data-type="circling_text" placeholder="Explain your selections..."></textarea>
+                        <textarea class="form-control border border-primary textarea" name="answers[{{ $question->id }}][comment]"
+                            rows="3" data-id="{{ $question->id }}" data-type="circling_text"
+                            placeholder="Explain your selections..."></textarea>
                         <small class="text-danger error d-none">This field is required</small>
                     </div>
                 </div>
@@ -258,15 +260,15 @@
             <div class="quiz-ipt-left">
                 <div class="form-group mb-3">
                     <label class="form-label text-muted mb-1" style="font-size: 0.75rem;">Oil Co Focal Point</label>
-                    <input class="quiz-ipt-each form-control" type="text" name="focal_point"
+                    <input class="quiz-ipt-each form-control border border-primary" type="text" name="focal_point"
                         placeholder="Oil Co Focal Point (e.g. Drilling Engr.)"
                         value="{{ $quizReport ? $quizReport->focal_point : '' }}">
                 </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label text-muted mb-1" style="font-size: 0.75rem;">Actual Actionee</label>
-                    <input class="quiz-ipt-each form-control" type="text" name="action_party"
-                        value="{{ $quizReport ? $quizReport->action_party : '' }}"
+                    <input class="quiz-ipt-each form-control border border-primary" type="text"
+                        name="action_party" value="{{ $quizReport ? $quizReport->action_party : '' }}"
                         placeholder="Actual Actionee (e.g. Service Co rep.)">
                 </div>
 
@@ -322,15 +324,16 @@
                 <div class="form-group mb-3">
                     <label class="form-label text-muted mb-1" style="font-size: 0.75rem;">And by when (Target
                         Date):</label>
-                    <input class=" quiz-ipt-each form-control" name="target_date" type="date" autocomplete="off"
-                        placeholder="And by when:" value="{{ $quizReport ? $quizReport->target_date : '' }}">
+                    <input class=" quiz-ipt-each form-control border border-primary" name="target_date"
+                        type="date" autocomplete="off" placeholder="And by when:"
+                        value="{{ $quizReport ? $quizReport->target_date : '' }}">
                 </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label text-muted mb-1" style="font-size: 0.75rem;">Lead Business
                         Partner</label>
-                    <input class="quiz-ipt-each form-control" type="text" name="business_partner"
-                        value="{{ $quizReport ? $quizReport->business_partner : '' }}"
+                    <input class="quiz-ipt-each form-control border border-primary" type="text"
+                        name="business_partner" value="{{ $quizReport ? $quizReport->business_partner : '' }}"
                         placeholder="Lead Business Partner">
                 </div>
             </div>
@@ -591,14 +594,14 @@
                     </div>
                 @elseif($question->type === 'text')
                     <div class="form-group" {{ $question->question_required ? 'data-required=1' : '' }}>
-                        <input type="text" class="form-control text"
+                        <input type="text" class="form-control border border-primary text"
                             value="{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}"
                             data-id="{{ $question->id }}" aria-describedby="" aria-label="input">
                         <small class="text-danger error" style="display: none">The field is required</small>
                     </div>
                 @elseif($question->type === 'textarea')
                     <div class="form-group" {{ $question->question_required ? 'data-required=1' : '' }}>
-                        <textarea class="form-control textarea" rows="3" data-id="{{ $question->id }}" aria-label="textarea">{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}</textarea>
+                        <textarea class="form-control border border-primary textarea" rows="3" data-id="{{ $question->id }}" aria-label="textarea">{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}</textarea>
                         <small class="text-danger error" style="display: none">The field is required</small>
                     </div>
                 @elseif($question->type === 'circling')
@@ -629,7 +632,7 @@
 
                         </div>
                         <div class="form-group textarea">
-                            <textarea class="form-control textarea" rows="3" data-id="{{ $question->id }}" data-type="circling_text">{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}</textarea>
+                            <textarea class="form-control border border-primary textarea" rows="3" data-id="{{ $question->id }}" data-type="circling_text">{{ Arr::exists($answers, $question->id) ? $answers[$question->id][0]['text'] : '' }}</textarea>
                             <small class="text-danger error" style="display: none">The fields is
                                 required</small>
                         </div>
@@ -644,9 +647,9 @@
             @method('PATCH')
             <div class="d-flex quiz-ipt">
                 <div class="quiz-ipt-left">
-                    <input class="quiz-ipt-each form-control" type="text" name="focal_point"
+                    <input class="quiz-ipt-each form-control border border-primary" type="text" name="focal_point"
                         placeholder="Oil Co Focal Point (e.g. Drilling Engr.)">
-                    <input class="quiz-ipt-each form-control" type="text" name="action_party"
+                    <input class="quiz-ipt-each form-control border border-primary" type="text" name="action_party"
                         placeholder="Actual Actionee (e.g. Service Co rep.)">
                     <div class="self-verification d-flex flex-column">
                         <div class="py-2">Self Verification</div>
@@ -694,9 +697,9 @@
                     </div>
                 </div>
                 <div class="quiz-ipt-right">
-                    <input class="datepicker quiz-ipt-each form-control" name="target_date" type="text"
+                    <input class="datepicker quiz-ipt-each form-control border border-primary" name="target_date" type="text"
                         autocomplete="off" placeholder="And by when:">
-                    <input class="quiz-ipt-each form-control" type="text" name="business_partner"
+                    <input class="quiz-ipt-each form-control border border-primary" type="text" name="business_partner"
                         placeholder="Lead Business Partner">
                 </div>
             </div>

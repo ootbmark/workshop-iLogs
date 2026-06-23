@@ -5,7 +5,7 @@
         /* Survey Question Card Wrapper (Dynamic Quiz Block style) */
         .quiz-block {
             background-color: #ffffff;
-            border: 1px solid var(--border-color);
+            border: 1px solid #0aa1ff;
             border-radius: 8px;
             padding: 2.25rem;
             margin-bottom: 1.75rem;
