@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
+use App\Models\Answer;
 use App\Models\Company;
 use App\Models\GroupForQuiz;
+use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\QuizReport;
 use Illuminate\Http\Request;
@@ -70,12 +72,10 @@ class FormBuilderController extends Controller
                 'is_active'     => false,
                 'slug'          => Quiz::getSlug($request->title),
             ]);
+            if ($request->groups) {
+                //return array_map('intval', $request->groups); //  $groupIds = $request->groups;
 
-            if ($request->filled('groups_ids')) {
-                $groupIds = explode(',', $request->groups);
-
-
-                $quiz->groups()->sync($groupIds);
+                $quiz->groups()->sync(array_map('intval', $request->groups));
             }
             return redirect(route('admin.builder.edit', base64_encode($quiz->id)))->with('success', 'Successfully Created');
         } catch (\Throwable $th) {
@@ -167,8 +167,8 @@ class FormBuilderController extends Controller
                     $answer =  $value->answers;
                     foreach ($answer as $key => $value1) {
                         $answerList[] = array(
-                            'answerId' => $value1->id,
-                            'title' => $value1->title,
+                            'optionCode' => $value1->id,
+                            'option' => $value1->title,
                         );
                     }
                     $questionList[] = array(
@@ -198,7 +198,25 @@ class FormBuilderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //return  $request;
+        $quiz = Quiz::find($id);
+        $quiz->update([
+            'title'         => $request->title,
+            'description'   => $request->description,
+            'time_limit'    => $request->date,
+            'answer_by_one' => $request->answer_by_one,
+            'company_id'    => $request->company,
+            'user_id'       => auth()->user()->id,
+            'is_active'     => false,
+            'slug'          => Quiz::getSlug($request->title),
+        ]);
+        //return $request->groups;
+        if ($request->groups) {
+            //return array_map('intval', $request->groups); //  $groupIds = $request->groups;
+
+            $quiz->groups()->sync(array_map('intval', $request->groups));
+        }
+        return back()->with('success', 'Successfully Update');
     }
 
     /**
@@ -270,9 +288,35 @@ class FormBuilderController extends Controller
 
     /* Form Builder */
     /* Store Question */
-    function storeQuestion(Request $request)
+    function storeQuestion($data, Request $request)
     {
         try {
+            $quiz = Quiz::find($data);
+            $data = array(
+                'quiz_id' => $quiz->id,
+                'title' => $request->title,
+                'type' => $request->type,
+                'question_required' => $request->required,
+            );
+            if (!$request->questionCode) {
+
+                $check =  Question::where($data)->first();
+                if (!$check) {
+                    $check =  Question::create($data);
+                }
+                if ($request->optionList) {
+                    foreach ($request->optionList as $key => $value) {
+                        Answer::create([
+                            'question_id' => $check->id,
+                            'title' => $value,
+                        ]);
+                    }
+                }
+            } else {
+                $question = Question::find($request->questionCode);
+                $question->update($data);
+            }
+            return $quiz;
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }

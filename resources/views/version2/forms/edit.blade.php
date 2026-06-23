@@ -45,9 +45,9 @@
                                 class="form-label text-uppercase text-muted fw-bold small tracking-wider mb-1"
                                 style="font-size: 11px;">Select Group <span class="text-danger">*</span></label>
                             <select id="select-groups" class="form-select py-2.5 bg-light border-0 shadow-none"
-                                name="group[]" multiple>
+                                name="groups[]" multiple>
                                 @foreach ($groupList as $item)
-                                    <option value="{{ $item['id'] }}"
+                                    <option value="{{ $item->id }}"
                                         {{ in_array($item['id'], $quiz->groups->pluck('id')->toArray()) ? 'selected' : '' }}>
                                         {{ $item['name'] }}
                                     </option>
@@ -62,10 +62,11 @@
                             <label for="quiz-group-track"
                                 class="form-label text-uppercase text-muted fw-bold small tracking-wider mb-1"
                                 style="font-size: 11px;">Company <span class="text-danger">*</span></label>
-                            <select class="form-select py-2.5 bg-light border-0 shadow-none" name="company"
-                                value="{{ $quiz->company_id }}">
+                            <select class="form-select py-2.5 bg-light border-0 shadow-none" name="company">
                                 @foreach ($companies as $item)
-                                    <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                                    <option value="{{ $item['id'] }}"
+                                        {{ $item->company_id == $item['id'] ? 'selected' : '' }}>{{ $item['name'] }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('company')
@@ -396,12 +397,10 @@
         // Dynamic Builder Core State
         function initBuilderState() {
             const questionList = @json($questionList);
-            console.log(questionList)
             if (questionList.length > 0) {
                 questionList.forEach(q => {
                     // Extract option titles into a clean array of strings: ["Yes", "No"]
                     const optionTitles = q.answer ? q.answer.map(opt => opt.title) : [];
-
                     // Map 'is_required' integer (1/0) to boolean (true/false)
                     const isRequired = q.is_required === 1;
 
@@ -427,7 +426,15 @@
         // Add a new question object to builder canvas
         function addQuestionCard(questionCode = null, title = "", type = "text", required = false, tooltip = "", options) {
             const qId = 'Q-' + Date.now() + Math.random().toString(36).substr(2, 4);
-            const optionList = options === null ? ['Yes', 'No'] : options;
+            const optionList = options === null ? [{
+                    optionCode: null,
+                    option: 'Yes'
+                },
+                {
+                    optionCode: null,
+                    option: 'No'
+                }
+            ] : options;
             const question = {
                 id: qId,
                 questionCode,
@@ -467,28 +474,40 @@
             activeQuestions.forEach((q, index) => {
                 const card = document.createElement('div');
                 card.className = "p-4 rounded-3 border bg-light shadow-sm hover-border-secondary";
-
                 // Construct Options Sub-panel if choice type
                 let optionsHtml = '';
                 if (['radio', 'multiple', 'dropdown'].includes(q.type)) {
+
+                    const optionRows = q.optionList.map((opt, oIdx) => `
+        <div class="d-flex align-items-center gap-2">
+            <input
+                type="text"
+                value="${opt.option}"
+                oninput="updateQuestionOption('${q.id}', ${oIdx}, this.value)"
+                class="form-control form-control-sm bg-light border-0 py-2"
+            >
+
+            <button
+                onclick="removeQuestionOption('${q.id}', ${oIdx})"
+                class="btn btn-link text-muted p-1">
+                <i class="bi bi-x-circle fs-5"></i>
+            </button>
+        </div>
+    `).join('');
                     optionsHtml = `
-                        <div class="mt-3 bg-white p-3 rounded-3 border">
-                            <label class="form-label text-uppercase text-muted fw-extrabold mb-2" style="font-size: 10px; tracking-wider;">Configure Selection Options</label>
-                            <div class="vstack gap-2" id="options-box-${q.id}">
-                                ${q.options.map((opt, oIdx) => `
-                                                                                                        <div class="d-flex align-items-center gap-2">
-                                                                                                            <input type="text" value="${opt}" oninput="updateQuestionOption('${q.id}', ${oIdx}, this.value)" class="form-control form-control-sm bg-light border-0 py-2">
-                                                                                                            <button onclick="removeQuestionOption('${q.id}', ${oIdx})" class="btn btn-link text-muted hover-text-danger p-1" title="Remove Option">
-                                                                                                                <i class="bi bi-x-circle fs-5"></i>
-                                                                                                            </button>
-                                                                                                        </div>
-                                                                                                    `).join('')}
-                            </div>
-                            <button onclick="addQuestionOption('${q.id}')" class="btn btn-link text-decoration-none text-spreadBlue-500 fw-bold small p-0 mt-2 d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-plus-circle"></i> Add Option
-                            </button>
-                        </div>
-                    `;
+        <div class="mt-3 bg-white p-3 rounded-3 border">
+            <label class="form-label text-uppercase text-muted fw-extrabold mb-2"
+                   style="font-size:10px;">
+                Configure Selection Options
+            </label>
+            <div class="vstack gap-2" id="options-box-${q.id}">
+               ${optionRows}
+            </div>
+            <button onclick="addQuestionOption('${q.id}')" class="btn btn-link text-decoration-none text-spreadBlue-500 fw-bold small p-0 mt-2 d-inline-flex align-items-center gap-1">
+                <i class="bi bi-plus-circle"></i>
+                Add Option
+            </button>
+        </div>`;
                 } else if (q.type === 'circling') {
                     optionsHtml = `
                         <div class="mt-3 bg-light p-3 rounded-3 border text-muted small" style="font-size: 13px;">
@@ -554,8 +573,8 @@
                             <label class="form-label text-uppercase text-muted fw-bold mb-1" style="font-size: 10px;">Answer Selection Input Type</label>
                             <select onchange="updateQuestionField('${q.id}', 'type', this.value)" class="form-select bg-white shadow-none text-muted">
                                 ${questionTypes.map(t => `
-                                                                                                                                                                                                                                                                                                            <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
-                                                                                                                                                                                                                                                                                                        `).join('')}
+                                                                                                                                            <option value="${t.value}" ${q.type === t.value ? 'selected' : ''}>${t.label}</option>
+                                                                                                                                        `).join('')}
                             </select>
                         </div>
                     </div>
@@ -577,9 +596,29 @@
                 if (field === 'type') {
                     // Reset defaults for clean switches
                     if (['radio', 'dropdown'].includes(value)) {
-                        q.options = ["Yes", "No"];
+                        q.options = [{
+                                optionCode: null,
+                                option: 'Yes'
+                            },
+                            {
+                                optionCode: null,
+                                option: 'No'
+                            }
+                        ];
                     } else if (value === 'multiple') {
-                        q.options = ["Option A", "Option B", "Option C"];
+                        q.options = [{
+                                optionCode: null,
+                                option: 'Option A'
+                            },
+                            {
+                                optionCode: null,
+                                option: 'Option B'
+                            },
+                            {
+                                optionCode: null,
+                                option: 'Option C'
+                            }
+                        ];
                     }
                     renderQuestionCards();
                 }
@@ -596,7 +635,11 @@
         function addQuestionOption(qId) {
             const q = activeQuestions.find(item => item.id === qId);
             if (q && q.options) {
-                q.options.push(`New Option ${q.options.length + 1}`);
+                const addItem = {
+                    optionCode: null,
+                    option: `New Option ${q.options.length + 1}`
+                }
+                q.options.push(addItem);
                 renderQuestionCards();
             }
         }
@@ -609,11 +652,7 @@
             }
         }
 
-        function saveQuestionCard(data) {
-            const question = activeQuestions.filter(q => q.id === data);
-            console.log(question)
-            //renderQuestionCards();
-        }
+
         // Form Publishing Submission Verification
         function handleSaveQuiz() {
             const title = document.getElementById('quiz-title').value.trim();
@@ -704,6 +743,30 @@
                 `,
                 () => switchView('dashboard')
             );
+
+
+        }
+
+        function saveQuestionCard(data) {
+            const question = activeQuestions.find(q => q.id === data);
+
+            $.ajax({
+                url: "{{ route('admin.builder.store-question', $quiz->id) }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: JSON.stringify(question),
+                contentType: "application/json",
+                success: function(res) {
+                    console.log(res);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+
+            console.log(question);
         }
     </script>
 @endsection

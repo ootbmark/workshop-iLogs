@@ -141,7 +141,7 @@ Route::prefix('admin')->group(function () {
     Route::post('build-forms/verification-update', [FormBuilderController::class, 'updateVerification'])->name('admin.builder.verification-update');
     Route::get('build-forms/{data}/reports', [FormBuilderController::class, 'reviewReports'])->name('admin.builder.view-report');
     Route::get('build-forms/{data}/reports-participant', [FormBuilderController::class, 'scribesDataTable'])->name('admin.builder.view-report-participant');
-
+    Route::post('build-forms/{data}/store-question', [FormBuilderController::class, 'storeQuestion'])->name('admin.builder.store-question');
     Route::resource('participants', Forms\ParticipantsController::class)->names([
         'index' => 'admin.participants.index',
         'create' => 'admin.participants.create',

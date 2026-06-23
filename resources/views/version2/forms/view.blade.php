@@ -117,7 +117,7 @@
                         <div class="form-group mt-3">
                             <small class="text-muted">SELECT GROUPS <span
                                     class="text-danger fw-bolder">*</span></small><sup>(Multiple Select)</sup>
-                            <select class="select-groups border border-primary" name="group[]" multiple>
+                            <select class="select-groups border border-primary" name="groups[]" multiple>
                                 @foreach ($groupList as $item)
                                     <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
                                 @endforeach
